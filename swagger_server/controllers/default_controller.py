@@ -5,7 +5,9 @@ from flask import Flask, jsonify
 from pymongo import MongoClient
 from swagger_server.models.book import Book  # noqa: E501
 from swagger_server import util
+from bson import ObjectId
 
+from connexion.exceptions import ProblemException
 cluster = MongoClient("mongodb+srv://alexey:alexey@cluster0.82thlib.mongodb.net/")
 db = cluster["booksDB"]
 collection = db["books"]
@@ -60,9 +62,13 @@ def books_id_get(id_):  # noqa: E501
 
     print(id_)
 
-    result = collection.find_one({"_id" : int(id_)})
+    result = collection.find_one({"_id" : ObjectId(id_)})
+    result["_id"] = str(result.get("_id"))
     print(result['title'])
-    return result
+
+    returned_book = Book.from_dict(result)
+
+    return returned_book
 
 
 def books_id_put(body, id_):  # noqa: E501
@@ -91,12 +97,28 @@ def books_post(body):  # noqa: E501
 
     :rtype: None
     """
-    # if connexion.request.is_json:
-    #     body = Book.from_dict(connexion.request.get_json()) # noqa: E501
-    print(connexion.request.get_json())
-    collection.insert_one(connexion.request.get_json())
+    if connexion.request.is_json:
+        body = Book.from_dict(connexion.request.get_json()) # noqa: E501
 
-    return 'Book posted!'
+        body.to_dict()
+
+    # print(connexion.request.get_json())
+    # TODO: try except for all mongo calls
+    query_output = collection.insert_one(body.to_dict())
+
+    if query_output.inserted_id:
+
+        return {
+            "inserted_id": str(query_output.inserted_id)
+        }, 201
+
+    else:
+        raise ProblemException(
+            status=500,
+            detail="Error inserting New Book",
+            title="Internal Server Error"
+        )
+
 
 
 def books_search_get(title=None, year=None, author=None, type_of_book=None):  # noqa: E501
