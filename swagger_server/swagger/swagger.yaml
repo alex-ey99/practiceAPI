@@ -1,0 +1,205 @@
+openapi: 3.0.3
+info:
+  title: Book Library
+  description: A catalog of books for a public library
+  version: "1.0"
+servers:
+- url: http://localhost:8080/
+paths:
+  /books:
+    get:
+      description: Return all the books available in the library
+      operationId: books_get
+      responses:
+        "200":
+          description: List with all the available books in the library
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+                x-content-type: application/json
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    post:
+      description: Add a new book to the library
+      operationId: books_post
+      requestBody:
+        description: Details of the book to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      responses:
+        "201":
+          description: Book successfully added to the library
+        "400":
+          description: Bad request
+        "401":
+          description: Non authorized to do this operation
+      security:
+      - auth: []
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /books/search:
+    get:
+      description: Get all the books matching your search criteria
+      operationId: books_search_get
+      parameters:
+      - name: title
+        in: query
+        description: Book title
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: year
+        in: query
+        description: Publication year
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: author
+        in: query
+        description: Book author
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: typeOfBook
+        in: query
+        description: Type of book
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List with all the books matching the search criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+                x-content-type: application/json
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /books/{id}:
+    get:
+      description: Return the details about the book with the requested ID
+      operationId: books_id_get
+      parameters:
+      - name: id
+        in: path
+        description: ID of the book to request
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: The requested book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        "404":
+          description: Book with the requested ID not found
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    put:
+      description: Update the details about the book with the specified ID
+      operationId: books_id_put
+      parameters:
+      - name: id
+        in: path
+        description: ID of the book to modify
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: New details of the book to be modified
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      responses:
+        "200":
+          description: Book successfully updated
+        "404":
+          description: Book with the requested ID not found
+      security:
+      - auth: []
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    delete:
+      description: Delete the book with the specified ID
+      operationId: books_id_delete
+      parameters:
+      - name: id
+        in: path
+        description: ID of the book to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Book successfully removed
+        "404":
+          description: Book with the requested ID not found
+      security:
+      - auth: []
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    Book:
+      required:
+      - author
+      - title
+      type: object
+      properties:
+        id:
+          minimum: 0
+          type: integer
+        title:
+          type: string
+        year:
+          maximum: 2021
+          minimum: 1400
+          type: integer
+        author:
+          type: string
+        pages:
+          type: integer
+        typeOfBook:
+          type: string
+          enum:
+          - novel
+          - encyclopedia
+          - comic
+          - biography
+          - history
+      example:
+        title: El Quijote
+        author: Miguel de Cervantes
+        year: 1605
+        pages: 750
+        typeOfBook: novel
+  securitySchemes:
+    auth:
+      type: apiKey
+      description: "API key provided by the administrator, in order to be able to\
+        \ add new books or modify the existing ones"
+      name: api_key
+      in: query
+      x-apikeyInfoFunc: swagger_server.controllers.authorization_controller.check_auth
+
