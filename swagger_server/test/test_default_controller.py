@@ -29,7 +29,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '//books/{id}'.format(id='id_example'),
+            '//books/{_id}'.format(id='id_example'),
             method='DELETE')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -40,7 +40,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '//books/{id}'.format(id='id_example'),
+            '//books/{_id}'.format(id='id_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -52,7 +52,7 @@ class TestDefaultController(BaseTestCase):
         """
         body = Book()
         response = self.client.open(
-            '//books/{id}'.format(id='id_example'),
+            '//books/{_id}'.format(id='id_example'),
             method='PUT',
             data=json.dumps(body),
             content_type='application/json')
@@ -81,7 +81,7 @@ class TestDefaultController(BaseTestCase):
         query_string = [('title', 'title_example'),
                         ('year', 56),
                         ('author', 'author_example'),
-                        ('type_of_book', 'type_of_book_example')]
+                        ('genre', 'genre_example')]
         response = self.client.open(
             '//books/search',
             method='GET',

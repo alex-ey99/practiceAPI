@@ -14,11 +14,11 @@ class Book(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: int=None, title: str=None, year: int=None, author: str=None, pages: int=None, type_of_book: str=None):  # noqa: E501
+    def __init__(self, id: str=None, title: str=None, year: int=None, author: str=None, pages: int=None, genre: str=None):  # noqa: E501
         """Book - a model defined in Swagger
 
         :param id: The id of this Book.  # noqa: E501
-        :type id: int
+        :type id: str
         :param title: The title of this Book.  # noqa: E501
         :type title: str
         :param year: The year of this Book.  # noqa: E501
@@ -27,32 +27,32 @@ class Book(Model):
         :type author: str
         :param pages: The pages of this Book.  # noqa: E501
         :type pages: int
-        :param type_of_book: The type_of_book of this Book.  # noqa: E501
-        :type type_of_book: str
+        :param genre: The genre of this Book.  # noqa: E501
+        :type genre: str
         """
         self.swagger_types = {
-            'id': int,
+            'id': str,
             'title': str,
             'year': int,
             'author': str,
             'pages': int,
-            'type_of_book': str
+            'genre': str
         }
 
         self.attribute_map = {
-            'id': 'id',
+            'id': '_id',
             'title': 'title',
             'year': 'year',
             'author': 'author',
             'pages': 'pages',
-            'type_of_book': 'typeOfBook'
+            'genre': 'genre'
         }
         self._id = id
         self._title = title
         self._year = year
         self._author = author
         self._pages = pages
-        self._type_of_book = type_of_book
+        self._genre = genre
 
     @classmethod
     def from_dict(cls, dikt) -> 'Book':
@@ -66,22 +66,22 @@ class Book(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self) -> int:
+    def id(self) -> str:
         """Gets the id of this Book.
 
 
         :return: The id of this Book.
-        :rtype: int
+        :rtype: str
         """
         return self._id
 
     @id.setter
-    def id(self, id: int):
+    def id(self, id: str):
         """Sets the id of this Book.
 
 
         :param id: The id of this Book.
-        :type id: int
+        :type id: str
         """
 
         self._id = id
@@ -175,28 +175,28 @@ class Book(Model):
         self._pages = pages
 
     @property
-    def type_of_book(self) -> str:
-        """Gets the type_of_book of this Book.
+    def genre(self) -> str:
+        """Gets the genre of this Book.
 
 
-        :return: The type_of_book of this Book.
+        :return: The genre of this Book.
         :rtype: str
         """
-        return self._type_of_book
+        return self._genre
 
-    @type_of_book.setter
-    def type_of_book(self, type_of_book: str):
-        """Sets the type_of_book of this Book.
+    @genre.setter
+    def genre(self, genre: str):
+        """Sets the genre of this Book.
 
 
-        :param type_of_book: The type_of_book of this Book.
-        :type type_of_book: str
+        :param genre: The genre of this Book.
+        :type genre: str
         """
         allowed_values = ["novel", "encyclopedia", "comic", "biography", "history"]  # noqa: E501
-        if type_of_book not in allowed_values:
+        if genre not in allowed_values:
             raise ValueError(
-                "Invalid value for `type_of_book` ({0}), must be one of {1}"
-                .format(type_of_book, allowed_values)
+                "Invalid value for `genre` ({0}), must be one of {1}"
+                .format(genre, allowed_values)
             )
 
-        self._type_of_book = type_of_book
+        self._genre = genre

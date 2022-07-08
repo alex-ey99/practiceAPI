@@ -70,9 +70,9 @@ paths:
         explode: true
         schema:
           type: string
-      - name: typeOfBook
+      - name: genre
         in: query
-        description: Type of book
+        description: Genre of book
         required: false
         style: form
         explode: true
@@ -89,12 +89,12 @@ paths:
                   $ref: '#/components/schemas/Book'
                 x-content-type: application/json
       x-openapi-router-controller: swagger_server.controllers.default_controller
-  /books/{id}:
+  /books/{_id}:
     get:
       description: Return the details about the book with the requested ID
       operationId: books_id_get
       parameters:
-      - name: id
+      - name: _id
         in: path
         description: ID of the book to request
         required: true
@@ -116,7 +116,7 @@ paths:
       description: Update the details about the book with the specified ID
       operationId: books_id_put
       parameters:
-      - name: id
+      - name: _id
         in: path
         description: ID of the book to modify
         required: true
@@ -143,7 +143,7 @@ paths:
       description: Delete the book with the specified ID
       operationId: books_id_delete
       parameters:
-      - name: id
+      - name: _id
         in: path
         description: ID of the book to delete
         required: true
@@ -167,20 +167,21 @@ components:
       - title
       type: object
       properties:
-        id:
-          minimum: 0
-          type: integer
+        _id:
+          type: string
         title:
           type: string
         year:
-          maximum: 2021
+          maximum: 2022
           minimum: 1400
           type: integer
         author:
           type: string
         pages:
+          maximum: 5000
+          minimum: 1
           type: integer
-        typeOfBook:
+        genre:
           type: string
           enum:
           - novel
@@ -189,11 +190,12 @@ components:
           - biography
           - history
       example:
-        title: El Quijote
-        author: Miguel de Cervantes
-        year: 1605
-        pages: 750
-        typeOfBook: novel
+        pages: 3014
+        year: 1449
+        author: author
+        genre: novel
+        _id: _id
+        title: title
   securitySchemes:
     auth:
       type: apiKey

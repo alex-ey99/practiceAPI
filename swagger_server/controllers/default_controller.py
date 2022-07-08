@@ -8,6 +8,8 @@ from swagger_server import util
 from bson import ObjectId
 
 from connexion.exceptions import ProblemException
+
+
 cluster = MongoClient("mongodb+srv://alexey:alexey@cluster0.82thlib.mongodb.net/")
 db = cluster["booksDB"]
 collection = db["books"]
@@ -22,20 +24,23 @@ def books_get():  # noqa: E501
 
     :rtype: List[Book]
     """
-    results = collection.find({})
-    books = []
-    for result in results:
-        books.append(result)
-        print(result["title"])
+    try:
+        results = collection.find({})
+        books = []
+        for result in results:
+            books.append(Book.from_dict(result))
+            # print(result["title"])
+
+            # print(books)
+        return books, 200
+    except:
+
+        print("An exception occured")
+        return 500
 
 
-    print(books)
-    # json_data = dumps(list_cur)
-    return jsonify({"books": books})
 
-
-
-def books_id_delete(id_):  # noqa: E501
+def books_id_delete(_id):  # noqa: E501
     """books_id_delete
 
     Delete the book with the specified ID # noqa: E501
@@ -45,11 +50,14 @@ def books_id_delete(id_):  # noqa: E501
 
     :rtype: None
     """
-    collection.delete_one({"_id": int(id_)})
-    return 'do some magic!'
+    query_output = collection.delete_one({"_id": ObjectId(_id)})
+    if(query_output.deleted_count==1):
+        return "Book successfully removed", 201
+    else:
+        return "Book with the requested ID not found", 404
 
 
-def books_id_get(id_):  # noqa: E501
+def books_id_get(_id):  # noqa: E501
     """books_id_get
 
     Return the details about the book with the requested ID # noqa: E501
@@ -60,18 +68,18 @@ def books_id_get(id_):  # noqa: E501
     :rtype: Book
     """
 
-    print(id_)
+    # print(id_)
 
-    result = collection.find_one({"_id" : ObjectId(id_)})
-    result["_id"] = str(result.get("_id"))
-    print(result['title'])
+    if collection.find_one({"_id" : ObjectId(_id)}) is None:
+        return "Book with the requested ID not found", 404
+    else:
+        result = collection.find_one({"_id" : ObjectId(_id)})
+        result["_id"] = str(result.get("_id"))
+        returned_book = Book.from_dict(result)
+        return returned_book, 200
 
-    returned_book = Book.from_dict(result)
 
-    return returned_book
-
-
-def books_id_put(body, id_):  # noqa: E501
+def books_id_put(body, _id):  # noqa: E501
     """books_id_put
 
     Update the details about the book with the specified ID # noqa: E501
@@ -83,8 +91,11 @@ def books_id_put(body, id_):  # noqa: E501
 
     :rtype: None
     """
-    collection.update_one({"_id": int(id_)},{"$set":connexion.request.get_json()})
-    return 'do some magic!'
+    query_output = collection.update_one({"_id": ObjectId(_id)},{"$set":connexion.request.get_json()})
+    if query_output.modified_count==1:
+        return "Book successfully updated", 200
+    else:
+        return "Book with the requested ID not found", 404
 
 
 def books_post(body):  # noqa: E501
@@ -99,7 +110,6 @@ def books_post(body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = Book.from_dict(connexion.request.get_json()) # noqa: E501
-
         body.to_dict()
 
     # print(connexion.request.get_json())
@@ -107,21 +117,24 @@ def books_post(body):  # noqa: E501
     query_output = collection.insert_one(body.to_dict())
 
     if query_output.inserted_id:
-
-        return {
-            "inserted_id": str(query_output.inserted_id)
-        }, 201
-
+        # return {
+        #     "inserted_id": str(query_output.inserted_id)
+        # }, 201
+        return "Book successfully added to the library", 201
     else:
-        raise ProblemException(
-            status=500,
-            detail="Error inserting New Book",
-            title="Internal Server Error"
-        )
+        return "Bad request", 400
+
+
+    # else:
+    #     raise ProblemException(
+    #         status=500,
+    #         detail="Error inserting New Book",
+    #         title="Internal Server Error"
+    #     )
 
 
 
-def books_search_get(title=None, year=None, author=None, type_of_book=None):  # noqa: E501
+def books_search_get(title=None, year=None, author=None, genre=None):  # noqa: E501
     """books_search_get
 
     Get all the books matching your search criteria # noqa: E501
@@ -132,8 +145,8 @@ def books_search_get(title=None, year=None, author=None, type_of_book=None):  # 
     :type year: int
     :param author: Book author
     :type author: str
-    :param type_of_book: Type of book
-    :type type_of_book: str
+    :param genre: Type of book
+    :type genre: str
 
     :rtype: List[Book]
     """
@@ -141,8 +154,19 @@ def books_search_get(title=None, year=None, author=None, type_of_book=None):  # 
     if(title): book["title"] = title
     if(year): book["year"] = year
     if(author): book["author"] = author
-    if(type_of_book): book["typeOfBook"] = type_of_book
+    if(genre): book["genre"] = genre
 
-    result = collection.find_one(book)
-    print(result)
-    return result
+    results = collection.find(book)
+    books = []
+    for result in results:
+        books.append(Book.from_dict(result))
+        # print(result["title"])
+    # print(books)
+    if len(books) ==0:
+        return "No book with such criteria found", 404
+    else:
+        return books, 200
+
+
+
+
