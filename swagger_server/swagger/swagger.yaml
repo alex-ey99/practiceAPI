@@ -169,13 +169,20 @@ components:
       properties:
         _id:
           type: string
+          readOnly: true
         title:
+          maxLength: 100
+          minLength: 1
+          pattern: "^[\\.\\(\\)\\!\\?\\-\\_a-zA-Z0-9\\s]*$"
           type: string
         year:
           maximum: 2022
           minimum: 1400
           type: integer
         author:
+          maxLength: 60
+          minLength: 1
+          pattern: "^[a-zA-Z\\s]*$"
           type: string
         pages:
           maximum: 5000
