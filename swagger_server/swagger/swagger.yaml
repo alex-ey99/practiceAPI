@@ -173,7 +173,7 @@ components:
         title:
           maxLength: 100
           minLength: 1
-          pattern: "^[\\.\\(\\)\\!\\?\\-\\_a-zA-Z0-9\\s]*$"
+          pattern: "^[\\.\\,\\(\\)\\!\\?\\-\\_a-zA-Z0-9\\s]*$"
           type: string
         year:
           maximum: 2022
@@ -209,6 +209,6 @@ components:
       description: "API key provided by the administrator, in order to be able to\
         \ add new books or modify the existing ones"
       name: api_key
-      in: query
+      in: header
       x-apikeyInfoFunc: swagger_server.controllers.authorization_controller.check_auth
 

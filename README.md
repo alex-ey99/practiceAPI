@@ -29,6 +29,11 @@ Your Swagger definition lives here:
 ```
 http://localhost:8080//swagger.json
 ```
+Authentication
+```
+To access the endpoints requiring authorization make an .env file and initialize API_KEY and SECRET
+To test it out, use https://jwt.io/#debugger-io to create a JWT with the API_KEY and SECRET
+```
 
 To launch the integration tests, use tox:
 ```
