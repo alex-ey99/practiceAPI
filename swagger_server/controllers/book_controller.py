@@ -15,6 +15,9 @@ db = cluster["booksDB"]
 collection = db["books"]
 
 
+collectionUsers = db["users"]
+
+
 
 def books_get():  # noqa: E501
     """books_get
@@ -24,11 +27,14 @@ def books_get():  # noqa: E501
 
     :rtype: List[Book]
     """
+
     try:
         results = collection.find({})
+
         books = []
         for result in results:
             books.append(Book.from_dict(result))
+            print(result)
             # print(result["title"])
 
             # print(books)
@@ -59,17 +65,26 @@ def books_id_delete(_id):  # noqa: E501
     # else:
     #     return "Book with the requested ID not found", 404
 
-    try:
-        query_output = collection.delete_one({"_id": ObjectId(_id)})
-        if(query_output.deleted_count==1):
-            return "Book successfully removed", 201
-        else:
-            return "Book with the requested ID not found", 404
-    except:
+    username= connexion.context["token_info"]
+    role = collectionUsers.find_one(username)["role"]
+    if(role=="admin" or role=="librarian"):
+        try:
+            query_output = collection.delete_one({"_id": ObjectId(_id)})
+            if(query_output.deleted_count==1):
+                return "Book successfully removed", 201
+            else:
+                return "Book with the requested ID not found", 404
+        except:
+            raise ProblemException(
+                status=500,
+                detail="Error deleting book",
+                title="Internal Server Error"
+            )
+    else:
         raise ProblemException(
-            status=500,
-            detail="Error deleting book",
-            title="Internal Server Error"
+            status=401,
+            detail ="Only admins and librarians can delete books",
+            title= "Unauthorized access"
         )
 
 
@@ -117,19 +132,28 @@ def books_id_put(body, _id):  # noqa: E501
 
     :rtype: None
     """
-    try:
+    username = connexion.context["token_info"]
+    role = collectionUsers.find_one(username)["role"]
+    if (role == "admin" or role == "librarian"):
+        try:
 
-        query_output = collection.update_one({"_id": ObjectId(_id)},{"$set":connexion.request.get_json()})
-        if query_output.modified_count==1:
-            return "Book successfully updated", 200
-        else:
-            return "Book with the requested ID not found", 404
+            query_output = collection.update_one({"_id": ObjectId(_id)},{"$set":connexion.request.get_json()})
+            if query_output.modified_count==1:
+                return "Book successfully updated", 200
+            else:
+                return "Book with the requested ID not found", 404
 
-    except:
+        except:
+            raise ProblemException(
+                status=500,
+                detail="Error updating book with specified id",
+                title="Internal server error"
+            )
+    else:
         raise ProblemException(
-            status=500,
-            detail="Error updating book with specified id",
-            title="Internal server error"
+            status=401,
+            detail ="Only admins and librarians can delete books",
+            title= "Unauthorized access"
         )
 
 
@@ -144,6 +168,7 @@ def books_post(body):  # noqa: E501
 
     :rtype: None
     """
+
     try:
 
         if connexion.request.is_json:
