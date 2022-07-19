@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: app
+    build:
+      dockerfile: Dockerfile
+
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    environment:
+      CONNECTION_STRING: "mongodb://root2:root2@mongodb:27017/"
+      SECRET: "Cryptography"
+    networks:
+      - mynet
+
+  mongodb:
+    container_name : mongodb
+    image: 'mongo'
+    command: mongod --auth
+    environment:
+      MONGO_INITDB_DATABASE: admin
+      MONGO_INITDB_ROOT_USERNAME: root2
+      MONGO_INITDB_ROOT_PASSWORD: root2
+    volumes:
+      - ~/mongo:/data/db
+    ports:
+      - '27017:27017'
+    networks:
+      - mynet
+networks:
+  mynet:
+    driver: bridge
+
+
+

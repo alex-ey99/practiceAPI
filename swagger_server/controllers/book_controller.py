@@ -6,15 +6,21 @@ from pymongo import MongoClient
 from swagger_server.models.book import Book  # noqa: E501
 from swagger_server import util
 from bson import ObjectId
+from os import environ as env
+from dotenv import load_dotenv, find_dotenv
 
 from connexion.exceptions import ProblemException
 
 
-cluster = MongoClient("mongodb+srv://alexey:alexey@cluster0.82thlib.mongodb.net/")
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
+
+
+# cluster = MongoClient("mongodb+srv://alexey:alexey@cluster0.82thlib.mongodb.net/")
+cluster = MongoClient(env.get("CONNECTION_STRING","mongodb://localhost:27017"))
 db = cluster["booksDB"]
 collection = db["books"]
-
-
 collectionUsers = db["users"]
 
 
@@ -35,9 +41,7 @@ def books_get():  # noqa: E501
         for result in results:
             books.append(Book.from_dict(result))
             print(result)
-            # print(result["title"])
-
-            # print(books)
+         # print(books)
         return books, 200
     except:
         raise ProblemException(
@@ -59,11 +63,7 @@ def books_id_delete(_id):  # noqa: E501
 
     :rtype: None
     """
-    # query_output = collection.delete_one({"_id": ObjectId(_id)})
-    # if(query_output.deleted_count==1):
-    #     return "Book successfully removed", 201
-    # else:
-    #     return "Book with the requested ID not found", 404
+
 
     username= connexion.context["token_info"]
     role = collectionUsers.find_one(username)["role"]
@@ -102,7 +102,7 @@ def books_id_get(_id):  # noqa: E501
     :rtype: Book
     """
 
-    # print(id_)
+
     try:
         if collection.find_one({"_id" : ObjectId(_id)}) is None:
             return "Book with the requested ID not found", 404
@@ -192,12 +192,7 @@ def books_post(body):  # noqa: E501
         )
 
 
-    # else:
-    #     raise ProblemException(
-    #         status=500,
-    #         detail="Error inserting New Book",
-    #         title="Internal Server Error"
-    #     )
+
 
 
 
@@ -228,7 +223,7 @@ def books_search_get(title=None, year=None, author=None, genre=None):  # noqa: E
         books = []
         for result in results:
             books.append(Book.from_dict(result))
-            # print(result["title"])
+
         # print(books)
         if len(books) ==0:
             return "No book with such criteria found", 404

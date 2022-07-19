@@ -13,14 +13,20 @@ from dotenv import load_dotenv, find_dotenv
 from os import environ as env
 import secrets
 
-cluster = MongoClient("mongodb+srv://alexey:alexey@cluster0.82thlib.mongodb.net/")
-db = cluster["booksDB"]
-collection = db["users"]
+
+
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
 SECRET = env.get("SECRET")
-API_KEY = env.get("API_KEY")
+
+
+# cluster = MongoClient("mongodb+srv://alexey:alexey@cluster0.82thlib.mongodb.net/")
+cluster = MongoClient(env.get("CONNECTION_STRING","mongodb://localhost:27017"))
+db = cluster["booksDB"]
+collection = db["users"]
+
+
 
 def user_login_post(body):  # noqa: E501
     """user_login_post
@@ -34,8 +40,8 @@ def user_login_post(body):  # noqa: E501
     """
     #we need to check if username is in the database and we need to generate a jwt token and return it
     #our jwt token will contain in the payload the username and a randomly generated token
-    #this is a randomly generated token
-    token = secrets.token_urlsafe(16);
+
+    token = secrets.token_urlsafe(16); #this is a randomly generated token
 
     if connexion.request.is_json:
         body = UserLoginBody.from_dict(connexion.request.get_json())  # noqa: E501
