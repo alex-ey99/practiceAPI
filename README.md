@@ -44,7 +44,7 @@ tox
 ## Running with Docker
 
 To run the server on a Docker container, please execute the following from the root directory:
-
+```
 #build docker-compose
 docker-compose build
 
