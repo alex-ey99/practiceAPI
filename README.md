@@ -31,8 +31,8 @@ http://localhost:8080//swagger.json
 ```
 Authentication
 ```
-To access the endpoints requiring authorization make an .env file and initialize API_KEY and SECRET
-To test it out, use https://jwt.io/#debugger-io to create a JWT with the API_KEY and SECRET
+To access the endpoints requiring authorization make an .env file and initialize SECRET
+eg: SECRET=secret
 ```
 
 To launch the integration tests, use tox:
@@ -45,10 +45,10 @@ tox
 
 To run the server on a Docker container, please execute the following from the root directory:
 
-```bash
-# building the image
-docker build -t swagger_server .
+#build docker-compose
+docker-compose build
 
-# starting up a container
-docker run -p 8080:8080 swagger_server
+#start docker-compose
+docker-compose start -d
+
 ```
