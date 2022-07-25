@@ -10,6 +10,8 @@ tags:
   description: Eveyrthing about books
 - name: user
   description: User operations
+- name: images
+  description: Images operations
 paths:
   /books:
     get:
@@ -234,7 +236,7 @@ paths:
       - name: username
         in: query
         description: Username to logout
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -245,6 +247,61 @@ paths:
         "400":
           description: Bad request
       x-openapi-router-controller: swagger_server.controllers.user_controller
+  /images:
+    post:
+      tags:
+      - images
+      description: Upload images
+      operationId: images_post
+      parameters:
+      - name: username_id
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        description: Image in binary format
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+        required: true
+      responses:
+        "201":
+          description: Successfully uploaded image
+        "400":
+          description: ""
+      x-openapi-router-controller: swagger_server.controllers.images_controller
+  /images/{user_id}.png:
+    get:
+      tags:
+      - images
+      description: Download images
+      operationId: images_user_id_png_get
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successfully downloaded image
+          content:
+            application/json:
+              schema:
+                type: string
+                description: the image file
+                format: binary
+                x-content-type: application/json
+        "400":
+          description: ""
+      x-openapi-router-controller: swagger_server.controllers.images_controller
 components:
   schemas:
     User:
@@ -273,6 +330,11 @@ components:
           - librarian
           - student
         token:
+          type: string
+          readOnly: true
+        image_path:
+          maxLength: 50
+          minLength: 1
           type: string
           readOnly: true
     Book:

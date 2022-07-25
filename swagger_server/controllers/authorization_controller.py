@@ -17,7 +17,8 @@ if ENV_FILE:
 SECRET = env.get("SECRET")
 
 # cluster = MongoClient("mongodb+srv://alexey:alexey@cluster0.82thlib.mongodb.net/")
-cluster = MongoClient(env.get("CONNECTION_STRING","mongodb://localhost:27017"))
+# cluster = MongoClient(env.get("CONNECTION_STRING","mongodb://localhost:27017"))
+cluster = MongoClient(env.get("CONNECTION_STRING","mongodb+srv://alexey:alexey@cluster0.82thlib.mongodb.net/"))
 db = cluster["booksDB"]
 collection = db["users"]
 

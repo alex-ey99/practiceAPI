@@ -15,7 +15,7 @@ class User(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, username: str=None, password: str=None, role: str=None, token: str=None):  # noqa: E501
+    def __init__(self, id: str=None, username: str=None, password: str=None, role: str=None, token: str=None, image_path: str=None):  # noqa: E501
         """User - a model defined in Swagger
 
         :param id: The id of this User.  # noqa: E501
@@ -28,13 +28,16 @@ class User(Model):
         :type role: str
         :param token: The token of this User.  # noqa: E501
         :type token: str
+        :param image_path: The image_path of this User.  # noqa: E501
+        :type image_path: str
         """
         self.swagger_types = {
             'id': str,
             'username': str,
             'password': str,
             'role': str,
-            'token': str
+            'token': str,
+            'image_path': str
         }
 
         self.attribute_map = {
@@ -42,13 +45,15 @@ class User(Model):
             'username': 'username',
             'password': 'password',
             'role': 'role',
-            'token': 'token'
+            'token': 'token',
+            'image_path': 'image_path'
         }
         self._id = id
         self._username = username
         self._password = password
         self._role = role
         self._token = token
+        self._image_path = image_path
 
     @classmethod
     def from_dict(cls, dikt) -> 'User':
@@ -175,3 +180,24 @@ class User(Model):
         """
 
         self._token = token
+
+    @property
+    def image_path(self) -> str:
+        """Gets the image_path of this User.
+
+
+        :return: The image_path of this User.
+        :rtype: str
+        """
+        return self._image_path
+
+    @image_path.setter
+    def image_path(self, image_path: str):
+        """Sets the image_path of this User.
+
+
+        :param image_path: The image_path of this User.
+        :type image_path: str
+        """
+
+        self._image_path = image_path
