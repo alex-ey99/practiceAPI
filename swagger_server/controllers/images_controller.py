@@ -25,7 +25,7 @@ def images_post(body, username_id):  # noqa: E501
 
     :param body: Image in binary format
     :type body: dict | bytes
-    :param username_id: 
+    :param username_id:
     :type username_id: str
 
     :rtype: None
@@ -35,12 +35,15 @@ def images_post(body, username_id):  # noqa: E501
     #in the user's database
     #we should convert image from binary to .png and store it
     cwd = os.getcwd()
-
+    # check if image is present. if presnt dont update
     if(not os.path.isdir(cwd+"/images/")):
         os.mkdir(cwd+"/images/")
     try:
         if collection.find_one({"username":username_id}) is not None:
-            path = "images/" + username_id + ".png"
+            output = collection.find_one({"username":username_id})
+            if(output["image_path"] is not None):
+                return "Image already exists", 400
+            path = cwd+ "/images/" + username_id + ".png"
             with open(path, 'wb') as file_handler:
                 file_handler.write(body)
             collection.update_one({"username":username_id}, {"$set":{"image_path":path}})
@@ -63,7 +66,7 @@ def images_user_id_png_get(user_id):  # noqa: E501
 
     Download images # noqa: E501
 
-    :param user_id: 
+    :param user_id:
     :type user_id: str
 
     :rtype: str
@@ -74,7 +77,9 @@ def images_user_id_png_get(user_id):  # noqa: E501
     try:
         if collection.find_one({"username": user_id}) is not None:
             user = collection.find_one({"username": user_id})
-            path = "../"+ user["image_path"]
+            if(user["image_path"] is None):
+                return "Image doesn't exist", 400
+            path = user["image_path"]
             return send_file(path), 200
         else:
             return "Username doesn't exist", 400
@@ -85,5 +90,80 @@ def images_user_id_png_get(user_id):  # noqa: E501
             detail="Internal server error",
             title="Server error"
         )
+
+
+
+
+
+
+
+def images_delete(username_id):  # noqa: E501
+    """images_delete
+
+    Delete image # noqa: E501
+
+    :param username_id:
+    :type username_id: str
+
+    :rtype: None
+    """
+
+    try:
+        if collection.find_one({"username": username_id}) is not None:
+            output = collection.find_one({"username": username_id})
+            if(output["image_path"] is None):
+                return "Image doesn't exist", 400
+            else:
+                os.remove(output["image_path"])
+                collection.update_one({"username": username_id}, {"$set": {"image_path": None}})
+                return "Image successfully removed", 201
+        else:
+            return "Username doesn't exist", 400
+
+    except:
+        raise ProblemException(
+            status=500,
+            detail="Internal server error",
+            title="Server error"
+        )
+
+
+
+
+def images_put(body, username_id):  # noqa: E501
+    """images_put
+
+    Update image # noqa: E501
+
+    :param body: Image in binary format
+    :type body: dict | bytes
+    :param username_id: 
+    :type username_id: str
+
+    :rtype: None
+    """
+    cwd = os.getcwd()
+
+    if (not os.path.isdir(cwd + "/images/")):
+        os.mkdir(cwd + "/images/")
+    try:
+        if collection.find_one({"username": username_id}) is not None:
+            path = cwd + "/images/" + username_id + ".png"
+            with open(path, 'wb') as file_handler:
+                file_handler.write(body)
+            collection.update_one({"username": username_id}, {"$set": {"image_path": path}})
+            return "Image successfully uploaded", 201
+        else:
+            return "Username doesn't exist", 400
+
+    except:
+        raise ProblemException(
+            status=500,
+            detail="Internal server error",
+            title="Server error"
+        )
+
+
+
 
 

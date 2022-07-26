@@ -248,10 +248,37 @@ paths:
           description: Bad request
       x-openapi-router-controller: swagger_server.controllers.user_controller
   /images:
+    put:
+      tags:
+      - images
+      description: Update image
+      operationId: images_put
+      parameters:
+      - name: username_id
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        description: Image in binary format
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+        required: true
+      responses:
+        "201":
+          description: Successfully updaated image
+        "400":
+          description: ""
+      x-openapi-router-controller: swagger_server.controllers.images_controller
     post:
       tags:
       - images
-      description: Upload images
+      description: Upload image
       operationId: images_post
       parameters:
       - name: username_id
@@ -274,6 +301,25 @@ paths:
           description: Successfully uploaded image
         "400":
           description: ""
+      x-openapi-router-controller: swagger_server.controllers.images_controller
+    delete:
+      tags:
+      - images
+      description: Delete image
+      operationId: images_delete
+      parameters:
+      - name: username_id
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Image successfully removed
+        "404":
+          description: Image with the username not found
       x-openapi-router-controller: swagger_server.controllers.images_controller
   /images/{user_id}.png:
     get:
@@ -333,10 +379,10 @@ components:
           type: string
           readOnly: true
         image_path:
+          readOnly: true
           maxLength: 50
           minLength: 1
           type: string
-          readOnly: true
     Book:
       required:
       - author
