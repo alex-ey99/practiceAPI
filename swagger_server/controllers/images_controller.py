@@ -7,7 +7,7 @@ from swagger_server import util
 from pymongo import MongoClient
 from dotenv import load_dotenv, find_dotenv
 from os import environ as env
-
+from PIL import Image
 from connexion.exceptions import ProblemException
 from flask import send_file, jsonify
 
@@ -46,6 +46,8 @@ def images_post(body, username_id):  # noqa: E501
             path = cwd+ "/images/" + username_id + ".png"
             with open(path, 'wb') as file_handler:
                 file_handler.write(body)
+            img = Image.open(path)
+            img.save(path, optimize=True) #optimize image size
             collection.update_one({"username":username_id}, {"$set":{"image_path":path}})
             return "Image successfully uploaded", 201
         else:
@@ -151,6 +153,8 @@ def images_put(body, username_id):  # noqa: E501
             path = cwd + "/images/" + username_id + ".png"
             with open(path, 'wb') as file_handler:
                 file_handler.write(body)
+            img = Image.open(path)
+            img.save(path, optimize=True)  # optimize image size
             collection.update_one({"username": username_id}, {"$set": {"image_path": path}})
             return "Image successfully uploaded", 201
         else:

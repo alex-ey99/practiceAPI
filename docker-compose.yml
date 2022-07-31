@@ -10,6 +10,8 @@ services:
       - "8080:8080"
     depends_on:
       - mongodb
+    volumes:
+      - images:/usr/src/app/images/
     environment:
       CONNECTION_STRING: "mongodb://root2:root2@mongodb:27017/"
       SECRET: "Cryptography"
@@ -33,6 +35,7 @@ services:
 networks:
   mynet:
     driver: bridge
-
+volumes:
+  images:
 
 

@@ -69,3 +69,5 @@ target/
 .env
 
 /images
+
+.DS_Store
