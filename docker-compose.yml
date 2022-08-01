@@ -12,6 +12,7 @@ services:
       - mongodb
     volumes:
       - images:/usr/src/app/images/
+      - files:/usr/src/app/files/
     environment:
       CONNECTION_STRING: "mongodb://root2:root2@mongodb:27017/"
       SECRET: "Cryptography"
@@ -37,5 +38,6 @@ networks:
     driver: bridge
 volumes:
   images:
+  files:
 
 

@@ -10,7 +10,9 @@ tags:
   description: Eveyrthing about books
 - name: user
   description: User operations
-- name: images
+- name: file
+  description: Files operations
+- name: image
   description: Images operations
 paths:
   /books:
@@ -247,14 +249,14 @@ paths:
         "400":
           description: Bad request
       x-openapi-router-controller: swagger_server.controllers.user_controller
-  /images:
+  /image:
     put:
       tags:
-      - images
+      - image
       description: Update image
-      operationId: images_put
+      operationId: image_put
       parameters:
-      - name: username_id
+      - name: username
         in: query
         required: true
         style: form
@@ -274,14 +276,14 @@ paths:
           description: Successfully updaated image
         "400":
           description: ""
-      x-openapi-router-controller: swagger_server.controllers.images_controller
+      x-openapi-router-controller: swagger_server.controllers.image_controller
     post:
       tags:
-      - images
+      - image
       description: Upload image
-      operationId: images_post
+      operationId: image_post
       parameters:
-      - name: username_id
+      - name: username
         in: query
         required: true
         style: form
@@ -301,14 +303,14 @@ paths:
           description: Successfully uploaded image
         "400":
           description: ""
-      x-openapi-router-controller: swagger_server.controllers.images_controller
+      x-openapi-router-controller: swagger_server.controllers.image_controller
     delete:
       tags:
-      - images
+      - image
       description: Delete image
-      operationId: images_delete
+      operationId: image_delete
       parameters:
-      - name: username_id
+      - name: username
         in: query
         required: true
         style: form
@@ -320,15 +322,15 @@ paths:
           description: Image successfully removed
         "404":
           description: Image with the username not found
-      x-openapi-router-controller: swagger_server.controllers.images_controller
-  /images/{user_id}.png:
+      x-openapi-router-controller: swagger_server.controllers.image_controller
+  /image/{username}.png:
     get:
       tags:
-      - images
+      - image
       description: Download images
-      operationId: images_user_id_png_get
+      operationId: image_username_png_get
       parameters:
-      - name: user_id
+      - name: username
         in: path
         required: true
         style: simple
@@ -347,7 +349,152 @@ paths:
                 x-content-type: application/json
         "400":
           description: ""
-      x-openapi-router-controller: swagger_server.controllers.images_controller
+      x-openapi-router-controller: swagger_server.controllers.image_controller
+  /file:
+    put:
+      tags:
+      - file
+      description: Update file
+      operationId: file_put
+      parameters:
+      - name: username
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        description: File in binary format
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/file_body'
+        required: true
+      responses:
+        "201":
+          description: Successfully updaated file
+        "400":
+          description: ""
+      x-openapi-router-controller: swagger_server.controllers.file_controller
+    post:
+      tags:
+      - file
+      description: Upload any file
+      operationId: file_post
+      parameters:
+      - name: username
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        description: File in binary format
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/file_body_1'
+        required: true
+      responses:
+        "201":
+          description: Successfully uploaded file
+        "400":
+          description: ""
+      x-openapi-router-controller: swagger_server.controllers.file_controller
+    delete:
+      tags:
+      - file
+      description: Delete file
+      operationId: file_delete
+      parameters:
+      - name: username
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: extension
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - png
+          - jpg
+          - pdf
+          - doc
+          - txt
+      responses:
+        "201":
+          description: File successfully removed
+        "404":
+          description: File with the username not found
+      x-openapi-router-controller: swagger_server.controllers.file_controller
+  /files:
+    delete:
+      tags:
+      - file
+      description: Delete all files associated with a username
+      operationId: files_delete
+      parameters:
+      - name: username
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Files successfully removed
+        "404":
+          description: No files with this username found
+      x-openapi-router-controller: swagger_server.controllers.file_controller
+  /file/{username}.{extension}:
+    get:
+      tags:
+      - file
+      description: Download file
+      operationId: file_username_extension_get
+      parameters:
+      - name: username
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: extension
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          enum:
+          - png
+          - jpg
+          - pdf
+          - doc
+          - txt
+      responses:
+        "200":
+          description: Successfully downloaded file
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The file
+                format: binary
+                x-content-type: application/json
+        "400":
+          description: ""
+      x-openapi-router-controller: swagger_server.controllers.file_controller
 components:
   schemas:
     User:
@@ -379,10 +526,15 @@ components:
           type: string
           readOnly: true
         image_path:
-          readOnly: true
           maxLength: 50
           minLength: 1
           type: string
+          readOnly: true
+        files:
+          type: array
+          readOnly: true
+          items:
+            type: string
     Book:
       required:
       - author
@@ -438,6 +590,18 @@ components:
           minLength: 3
           pattern: "^[a-zA-Z0-9]*$"
           type: string
+    file_body:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    file_body_1:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
   securitySchemes:
     auth:
       type: apiKey

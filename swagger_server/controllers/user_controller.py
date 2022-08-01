@@ -85,6 +85,7 @@ def user_register_post(body):  # noqa: E501
 
         if collection.find_one({"username":username}) is None:
             query_output = collection.insert_one(body.to_dict())
+            collection.update_one({"username":username}, {"$set":{"files":[]}}) #initialize empty array
             if query_output.inserted_id:
                 return "User successfully registered", 201
             else:

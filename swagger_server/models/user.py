@@ -15,7 +15,7 @@ class User(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, username: str=None, password: str=None, role: str=None, token: str=None, image_path: str=None):  # noqa: E501
+    def __init__(self, id: str=None, username: str=None, password: str=None, role: str=None, token: str=None, image_path: str=None, files: List[str]=None):  # noqa: E501
         """User - a model defined in Swagger
 
         :param id: The id of this User.  # noqa: E501
@@ -30,6 +30,8 @@ class User(Model):
         :type token: str
         :param image_path: The image_path of this User.  # noqa: E501
         :type image_path: str
+        :param files: The files of this User.  # noqa: E501
+        :type files: List[str]
         """
         self.swagger_types = {
             'id': str,
@@ -37,7 +39,8 @@ class User(Model):
             'password': str,
             'role': str,
             'token': str,
-            'image_path': str
+            'image_path': str,
+            'files': List[str]
         }
 
         self.attribute_map = {
@@ -46,7 +49,8 @@ class User(Model):
             'password': 'password',
             'role': 'role',
             'token': 'token',
-            'image_path': 'image_path'
+            'image_path': 'image_path',
+            'files': 'files'
         }
         self._id = id
         self._username = username
@@ -54,6 +58,7 @@ class User(Model):
         self._role = role
         self._token = token
         self._image_path = image_path
+        self._files = files
 
     @classmethod
     def from_dict(cls, dikt) -> 'User':
@@ -201,3 +206,24 @@ class User(Model):
         """
 
         self._image_path = image_path
+
+    @property
+    def files(self) -> List[str]:
+        """Gets the files of this User.
+
+
+        :return: The files of this User.
+        :rtype: List[str]
+        """
+        return self._files
+
+    @files.setter
+    def files(self, files: List[str]):
+        """Sets the files of this User.
+
+
+        :param files: The files of this User.
+        :type files: List[str]
+        """
+
+        self._files = files
