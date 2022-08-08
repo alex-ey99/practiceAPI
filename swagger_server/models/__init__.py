@@ -6,5 +6,6 @@ from __future__ import absolute_import
 from swagger_server.models.book import Book
 from swagger_server.models.file_body import FileBody
 from swagger_server.models.file_body1 import FileBody1
+from swagger_server.models.file_ import File_
 from swagger_server.models.user import User
 from swagger_server.models.user_login_body import UserLoginBody

@@ -55,9 +55,11 @@ def user_login_post(body):  # noqa: E501
         if query_output["password"] == pword:
             encoded = jwt.encode({"username": uname, "token": token }, SECRET , algorithm="HS256")
             collection.update_one({"username":uname},{"$set": {"token":token}})
-            return encoded
+            response = {"token": encoded}
+            return jsonify(response), 200
+        response = {"message": "Invalid username or password"}
+        return jsonify(response), 400
 
-        return"Invalid username or password", 400
     except:
         raise ProblemException(
             status=500,
@@ -87,11 +89,14 @@ def user_register_post(body):  # noqa: E501
             query_output = collection.insert_one(body.to_dict())
             collection.update_one({"username":username}, {"$set":{"files":[]}}) #initialize empty array
             if query_output.inserted_id:
-                return "User successfully registered", 201
+                response = {"message":"User successfully registered"}
+                return jsonify(response), 201
             else:
-                return 'Bad request', 400
+                response = {"message":"Bad request"}
+                return jsonify(response), 400
         else:
-            return "Username already exists", 400
+            response = {"message":"Username already exists"}
+            return jsonify(response), 400
 
     except:
         raise ProblemException(
@@ -114,7 +119,8 @@ def user_logout_get(username=None):  # noqa: E501
     if(username):
         try:
             collection.update_one({"username": username},{"$set":{"token" : ""}})
-            return "Successfully logged out user", 200
+            response = {"message":"Successfully logged out user"}
+            return jsonify(response), 200
         except:
             raise ProblemException(
                 status = 500,

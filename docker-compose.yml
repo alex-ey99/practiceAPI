@@ -11,7 +11,7 @@ services:
     depends_on:
       - mongodb
     volumes:
-      - images:/usr/src/app/images/
+#      - images:/usr/src/app/images/
       - files:/usr/src/app/files/
     environment:
       CONNECTION_STRING: "mongodb://root2:root2@mongodb:27017/"
@@ -37,7 +37,7 @@ networks:
   mynet:
     driver: bridge
 volumes:
-  images:
+#  images:
   files:
 
 

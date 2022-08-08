@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
+from swagger_server.models.file_ import File_  # noqa: F401,E501
 import re  # noqa: F401,E501
 from swagger_server import util
 
@@ -15,7 +16,7 @@ class User(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, username: str=None, password: str=None, role: str=None, token: str=None, image_path: str=None, files: List[str]=None):  # noqa: E501
+    def __init__(self, id: str=None, username: str=None, password: str=None, role: str=None, token: str=None, files: List[File_]=None):  # noqa: E501
         """User - a model defined in Swagger
 
         :param id: The id of this User.  # noqa: E501
@@ -28,10 +29,8 @@ class User(Model):
         :type role: str
         :param token: The token of this User.  # noqa: E501
         :type token: str
-        :param image_path: The image_path of this User.  # noqa: E501
-        :type image_path: str
         :param files: The files of this User.  # noqa: E501
-        :type files: List[str]
+        :type files: List[File_]
         """
         self.swagger_types = {
             'id': str,
@@ -39,8 +38,7 @@ class User(Model):
             'password': str,
             'role': str,
             'token': str,
-            'image_path': str,
-            'files': List[str]
+            'files': List[File_]
         }
 
         self.attribute_map = {
@@ -49,7 +47,6 @@ class User(Model):
             'password': 'password',
             'role': 'role',
             'token': 'token',
-            'image_path': 'image_path',
             'files': 'files'
         }
         self._id = id
@@ -57,7 +54,6 @@ class User(Model):
         self._password = password
         self._role = role
         self._token = token
-        self._image_path = image_path
         self._files = files
 
     @classmethod
@@ -187,43 +183,22 @@ class User(Model):
         self._token = token
 
     @property
-    def image_path(self) -> str:
-        """Gets the image_path of this User.
-
-
-        :return: The image_path of this User.
-        :rtype: str
-        """
-        return self._image_path
-
-    @image_path.setter
-    def image_path(self, image_path: str):
-        """Sets the image_path of this User.
-
-
-        :param image_path: The image_path of this User.
-        :type image_path: str
-        """
-
-        self._image_path = image_path
-
-    @property
-    def files(self) -> List[str]:
+    def files(self) -> List[File_]:
         """Gets the files of this User.
 
 
         :return: The files of this User.
-        :rtype: List[str]
+        :rtype: List[File_]
         """
         return self._files
 
     @files.setter
-    def files(self, files: List[str]):
+    def files(self, files: List[File_]):
         """Sets the files of this User.
 
 
         :param files: The files of this User.
-        :type files: List[str]
+        :type files: List[File_]
         """
 
         self._files = files

@@ -17,7 +17,7 @@ class TestFileController(BaseTestCase):
         
         """
         query_string = [('username', 'username_example'),
-                        ('extension', 'extension_example')]
+                        ('title', 'title_example')]
         response = self.client.open(
             '//file',
             method='DELETE',
@@ -30,14 +30,15 @@ class TestFileController(BaseTestCase):
 
         
         """
-        query_string = [('username', 'username_example')]
-        data = dict(file='file_example')
+        data = dict(username='username_example',
+                    title='title_example',
+                    description='description_example',
+                    file='file_example')
         response = self.client.open(
             '//file',
             method='POST',
             data=data,
-            content_type='multipart/form-data',
-            query_string=query_string)
+            content_type='multipart/form-data')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -46,24 +47,26 @@ class TestFileController(BaseTestCase):
 
         
         """
-        query_string = [('username', 'username_example')]
-        data = dict(file='file_example')
+        data = dict(file='file_example',
+                    username='username_example',
+                    old_title='old_title_example',
+                    new_title='new_title_example',
+                    new_description='new_description_example')
         response = self.client.open(
             '//file',
             method='PUT',
             data=data,
-            content_type='multipart/form-data',
-            query_string=query_string)
+            content_type='multipart/form-data')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_file_username_extension_get(self):
-        """Test case for file_username_extension_get
+    def test_file_username_title_get(self):
+        """Test case for file_username_title_get
 
         
         """
         response = self.client.open(
-            '//file/{username}.{extension}'.format(username='username_example', extension='extension_example'),
+            '//file/{username}/{title}'.format(username='username_example', title='title_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

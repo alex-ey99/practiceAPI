@@ -72,9 +72,11 @@ def books_id_delete(_id):  # noqa: E501
         try:
             query_output = collection.delete_one({"_id": ObjectId(_id)})
             if(query_output.deleted_count==1):
-                return "Book successfully removed", 201
+                response = {"message":"Book successfully removed"}
+                return jsonify(response), 201
             else:
-                return "Book with the requested ID not found", 404
+                response = {"message":"Book with the requested ID not found"}
+                return jsonify(response), 404
         except:
             raise ProblemException(
                 status=500,
@@ -106,7 +108,9 @@ def books_id_get(_id):  # noqa: E501
 
     try:
         if collection.find_one({"_id" : ObjectId(_id)}) is None:
-            return "Book with the requested ID not found", 404
+            response = {"message":"Book with the requested ID not found"}
+            return jsonify(response), 404
+
         else:
             result = collection.find_one({"_id" : ObjectId(_id)})
             result["_id"] = str(result.get("_id"))
@@ -140,9 +144,11 @@ def books_id_put(body, _id):  # noqa: E501
 
             query_output = collection.update_one({"_id": ObjectId(_id)},{"$set":connexion.request.get_json()})
             if query_output.modified_count==1:
-                return "Book successfully updated", 200
+                response = {"message":"Book successfully updated"}
+                return jsonify(response), 201
             else:
-                return "Book with the requested ID not found", 404
+                response = {"message":"Book with the requested ID not found"}
+                return jsonify(response), 404
 
         except:
             raise ProblemException(
@@ -182,9 +188,13 @@ def books_post(body):  # noqa: E501
             # return {
             #     "inserted_id": str(query_output.inserted_id)
             # }, 201
-            return "Book successfully added to the library", 201
+            response = {"message":"Book successfully added to the library"}
+            return jsonify(response), 201
+
         else:
-            return "Bad request", 400
+            response = {"message":"Bad request"}
+            return jsonify(response), 400
+
     except:
         raise ProblemException(
             status=500,
@@ -227,7 +237,9 @@ def books_search_get(title=None, year=None, author=None, genre=None):  # noqa: E
 
         # print(books)
         if len(books) ==0:
-            return "No book with such criteria found", 404
+            response = {"message":"No book with such criteria found"}
+            return jsonify(response), 404
+
         else:
             return books, 200
     except:

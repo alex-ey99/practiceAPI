@@ -14,20 +14,40 @@ class FileBody(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, file: str=None):  # noqa: E501
+    def __init__(self, file: str=None, username: str=None, old_title: str=None, new_title: str=None, new_description: str=None):  # noqa: E501
         """FileBody - a model defined in Swagger
 
         :param file: The file of this FileBody.  # noqa: E501
         :type file: str
+        :param username: The username of this FileBody.  # noqa: E501
+        :type username: str
+        :param old_title: The old_title of this FileBody.  # noqa: E501
+        :type old_title: str
+        :param new_title: The new_title of this FileBody.  # noqa: E501
+        :type new_title: str
+        :param new_description: The new_description of this FileBody.  # noqa: E501
+        :type new_description: str
         """
         self.swagger_types = {
-            'file': str
+            'file': str,
+            'username': str,
+            'old_title': str,
+            'new_title': str,
+            'new_description': str
         }
 
         self.attribute_map = {
-            'file': 'file'
+            'file': 'file',
+            'username': 'username',
+            'old_title': 'old_title',
+            'new_title': 'new_title',
+            'new_description': 'new_description'
         }
         self._file = file
+        self._username = username
+        self._old_title = old_title
+        self._new_title = new_title
+        self._new_description = new_description
 
     @classmethod
     def from_dict(cls, dikt) -> 'FileBody':
@@ -60,3 +80,87 @@ class FileBody(Model):
         """
 
         self._file = file
+
+    @property
+    def username(self) -> str:
+        """Gets the username of this FileBody.
+
+
+        :return: The username of this FileBody.
+        :rtype: str
+        """
+        return self._username
+
+    @username.setter
+    def username(self, username: str):
+        """Sets the username of this FileBody.
+
+
+        :param username: The username of this FileBody.
+        :type username: str
+        """
+
+        self._username = username
+
+    @property
+    def old_title(self) -> str:
+        """Gets the old_title of this FileBody.
+
+
+        :return: The old_title of this FileBody.
+        :rtype: str
+        """
+        return self._old_title
+
+    @old_title.setter
+    def old_title(self, old_title: str):
+        """Sets the old_title of this FileBody.
+
+
+        :param old_title: The old_title of this FileBody.
+        :type old_title: str
+        """
+
+        self._old_title = old_title
+
+    @property
+    def new_title(self) -> str:
+        """Gets the new_title of this FileBody.
+
+
+        :return: The new_title of this FileBody.
+        :rtype: str
+        """
+        return self._new_title
+
+    @new_title.setter
+    def new_title(self, new_title: str):
+        """Sets the new_title of this FileBody.
+
+
+        :param new_title: The new_title of this FileBody.
+        :type new_title: str
+        """
+
+        self._new_title = new_title
+
+    @property
+    def new_description(self) -> str:
+        """Gets the new_description of this FileBody.
+
+
+        :return: The new_description of this FileBody.
+        :rtype: str
+        """
+        return self._new_description
+
+    @new_description.setter
+    def new_description(self, new_description: str):
+        """Sets the new_description of this FileBody.
+
+
+        :param new_description: The new_description of this FileBody.
+        :type new_description: str
+        """
+
+        self._new_description = new_description
