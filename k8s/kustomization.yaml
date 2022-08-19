@@ -1,0 +1,11 @@
+kind: Kustomization
+
+resources:
+  - db/db-persistent-volume.yaml
+  - db/db-persistent-volume-claim.yaml
+  - db/db-service.yaml
+  - db/db-deployment.yaml
+  - web/web-persistent-volume.yaml
+  - web/web-persistent-volume-claim.yaml
+  - web/web-service.yaml
+  - web/web-deployment.yaml

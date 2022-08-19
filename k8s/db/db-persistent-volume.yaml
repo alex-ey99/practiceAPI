@@ -1,0 +1,16 @@
+#db-persistent-volume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+spec:
+  claimRef:
+    namespace: default
+    name: mongo-pvc
+  storageClassName: manual
+  capacity:
+    storage: 256Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /Users/alexey/myfileapp-pv

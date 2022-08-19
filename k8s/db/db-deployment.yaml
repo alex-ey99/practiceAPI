@@ -1,0 +1,39 @@
+#db-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+spec:
+  selector:
+    matchLabels:
+      app: mongo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongo
+          image: mongo
+          ports:
+            - containerPort: 27017
+              name: "mongo"
+          volumeMounts:
+            - mountPath: "/data/db"
+              name: mongo-storage
+          env:
+            - name: MONGO_INITDB_DATABASE
+              value: "admin"
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "root2"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "root2"
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: "2"
+      volumes:
+        - name: mongo-storage
+          persistentVolumeClaim:
+            claimName: mongo-pvc

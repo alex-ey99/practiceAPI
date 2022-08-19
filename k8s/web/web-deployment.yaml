@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fileapp
+spec:
+  selector:
+    matchLabels:
+      app: fileapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fileapp
+    spec:
+      containers:
+        - name: fileapp
+          image: al9x9y/fileapp:1.0
+          ports:
+            - containerPort: 8080
+              name: "http"
+          volumeMounts:
+            - mountPath: "/usr/src/app/files/"
+              name: file-storage
+          env:
+            - name: CONNECTION_STRING
+              value: "mongodb://root2:root2@mongo-service:27017/"
+            - name: MONGO_INITDB_DATABASE
+              value: "admin"
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "root2"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "root2"
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: "1"
+      volumes:
+        - name: file-storage
+          persistentVolumeClaim:
+            claimName: web-pvc

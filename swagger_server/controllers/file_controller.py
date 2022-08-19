@@ -7,9 +7,8 @@ from swagger_server import util
 from pymongo import MongoClient
 from dotenv import load_dotenv, find_dotenv
 from os import environ as env
-from PIL import Image
 from connexion.exceptions import ProblemException
-from flask import send_file, jsonify
+from flask import send_file, jsonify, send_from_directory
 from swagger_server.models.file_ import File_
 
 # cluster = MongoClient(env.get("CONNECTION_STRING","mongodb://localhost:27017"))
