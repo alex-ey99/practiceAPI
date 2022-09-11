@@ -1,0 +1,74 @@
+#db-stateful-set.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+spec:
+  serviceName: "mongo"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+        selector: mongo
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mongo
+          image: mongo:4.4.6
+          env:
+            # - name: MONGO_INITDB_DATABASE
+            #   value: "admin"
+            # - name: MONGO_INITDB_ROOT_USERNAME
+            #   value: "root2"
+            # - name: MONGO_INITDB_ROOT_PASSWORD
+            #   value: "root2"
+          # command: ["/bin/sh"]
+          # args: ["-c", "mongod --replSet=rs0 --bind_ip_all"]
+          command:
+          - /bin/sh
+          - -c
+          - >
+            if [ -f /data/db/admin-user.lock ]; then
+              mongod --replSet=rs0 --bind_ip_all;
+            else
+              mongod --auth;
+            fi;
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                - /bin/sh
+                - -c
+                - >
+                  if [ ! -f /data/db/admin-user.lock ]; then
+                    sleep 5;
+                    touch /data/db/admin-user.lock
+                    if [ "$HOSTNAME" = "mongo-0" ]; then
+                      mongo --eval 'db = db.getSiblingDB("admin"); db.createUser({ user: "root2", pwd: "root2", roles: [{ role: "root", db: "admin" }]});'
+                    fi;
+                    mongod --shutdown;
+                  fi;
+          ports:
+            - containerPort: 27017
+              name: "mongo"
+          volumeMounts:
+            - mountPath: "/data/db"
+              name: pvc
+
+          resources:
+            limits:
+              memory: 200Mi
+              cpu: 0.5
+  volumeClaimTemplates:
+    - metadata:
+        name: pvc
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 200Mi

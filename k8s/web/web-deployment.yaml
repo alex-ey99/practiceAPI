@@ -23,7 +23,8 @@ spec:
               name: file-storage
           env:
             - name: CONNECTION_STRING
-              value: "mongodb://root2:root2@mongo-service:27017/"
+              value: "mongodb://root2:root2@mongo-0.mongo:27017,mongo-1.mongo:27017,mongo-2.mongo:27017/?replicaSet=rs0"
+              # value: "mongodb://root2:root2@mongo:27017/"
             - name: MONGO_INITDB_DATABASE
               value: "admin"
             - name: MONGO_INITDB_ROOT_USERNAME
