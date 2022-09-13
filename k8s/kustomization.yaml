@@ -1,11 +1,17 @@
 kind: Kustomization
 
 resources:
-  # - db/db-persistent-volume.yaml
-  # - db/db-persistent-volume-claim.yaml
-  - db/db-service.yaml
-  - db/db-stateful-set.yaml
+  #statefulset without helm
+  # - db/db-service.yaml
+  # - db/db-stateful-set.yaml
+  # - web/web-persistent-volume.yaml
+  # - web/web-persistent-volume-claim.yaml
+  # - web/web-service.yaml
+  # - web/web-deployment.yaml
+
+  #statefulset with helm
   - web/web-persistent-volume.yaml
   - web/web-persistent-volume-claim.yaml
   - web/web-service.yaml
   - web/web-deployment.yaml
+  #in a separate window run helm install mongo bitnami/mongodb --values app-1.yaml
